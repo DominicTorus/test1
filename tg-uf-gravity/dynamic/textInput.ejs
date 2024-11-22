@@ -1,0 +1,144 @@
+'use client'
+<%_ let name=data.label _%>
+<%_ let nodesElementInfo= data.elementInfo _%>
+<%_ let nodes = data _%>
+<%_ let ufKey = data1[0].ufKey _%>
+<%_ let pfKey = data1[0].pfKey _%>
+<%_ let sfKey = data1[0].sfKey _%>
+<%_ let eventDetailsArray = data1[1] _%>
+<%_ let eventDetailsObj = data1[2] _%>
+<%_ let compDetailsLabel = data2 _%>
+<%_ let stateAndSetStatePre =data1[3] _%>
+import React, { <%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+  <%_ if(nodesElementInfo.props[i].name==="isClearable" || nodesElementInfo.props[i].name === "isVisible"){ _%>
+  useState<%_ break;} _%><%_ } _%> } from 'react'
+import { Container,TextInput,Button } from "@gravity-ui/uikit";
+import i18n from '@/app/components/i18n';
+<%_ let validation=false _%>
+<%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+  <%_ if(nodesElementInfo.props[i].name === "validation" && nodesElementInfo.props[i].value !== ""){ _%>
+    <%_ validation=true _%>
+  <%_}_%>  
+<%_}_%>
+<%_ if(validation){ _%>
+import * as v from 'valibot';
+<%_}_%>
+<%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+   <%_ if(nodesElementInfo.props[i].name === "needTooltip" && nodesElementInfo.props[i].enum.selectedValue.length && nodesElementInfo.props[i].enum.selectedValue[0] === "true"){ _%>
+import { ActionTooltip } from '@gravity-ui/uikit';
+  <%_ } _%>
+<%_ } _%>
+
+const TextInput<%=name %> = ({<%_ for(let i=0;i<stateAndSetStatePre.length;i++) { _%> <%= Object.keys(stateAndSetStatePre[i])[0] %>, <%= stateAndSetStatePre[i][Object.keys(stateAndSetStatePre[i])[0]] %>,<%_} _%>checkToAdd,setCheckToAdd,refetch,setRefetch}:any) => {
+  <%_ if(validation){ _%>
+  const [error, setError] = React.useState<any>({errorMessage:"",validationState:'valid'});
+const handleChange = (e: any) => {
+  <%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+  <%_ if(nodesElementInfo.props[i].name === "validation" && nodesElementInfo.props[i].value !== ""){ _%>
+    let Schema = <%-JSON.stringify(nodesElementInfo.props[i].value)%>
+    const transformFunction = new Function(
+                  'v',
+                  `return ${Schema};`,
+                )(v);
+<%_}_%>  
+<%_}_%>
+  <%_ if(nodesElementInfo.type === "number"){ _%>
+    const result = v.safeParse(transformFunction, +e.target.value);
+    <%_ } _%>
+    <%_ if(nodesElementInfo.type === "text"){ _%>
+      const result = v.safeParse(transformFunction, e.target.value);
+      <%_ } _%>
+    if(result.success == true){
+    <%_ if(nodesElementInfo.type === "number"){ _%>
+      <%= "set"+compDetailsLabel+"Data"%>((prev: any) => ({ ...prev, <%=name.toLowerCase() %>: +e.target.value }))
+    <%_}_%>
+    <%_ if(nodesElementInfo.type === "text"){ _%>
+      <%= "set"+compDetailsLabel+"Data"%>((prev: any) => ({ ...prev, <%=name.toLowerCase() %>: e.target.value }))
+    <%_}_%>
+      setError((pre:any)=>({...pre,validationState:'valid'}));
+      setCheckToAdd((pre: any) => ({ ...pre, <%=name.toLowerCase() %>: false }))
+    }else{
+    <%_ if(nodesElementInfo.type === "number"){ _%>
+      <%= "set"+compDetailsLabel+"Data"%>((prev: any) => ({ ...prev, <%=name.toLowerCase() %>: +e.target.value }))
+    <%_}_%>
+    <%_ if(nodesElementInfo.type === "text"){ _%>
+      <%= "set"+compDetailsLabel+"Data"%>((prev: any) => ({ ...prev, <%=name.toLowerCase() %>: e.target.value }))
+    <%_}_%>
+      setError((pre:any)=>({...pre,validationState:'invalid',errorMessage:result.issues[0].message}));
+      setCheckToAdd((pre: any) => ({ ...pre, <%name.toLowerCase() %>: true }))
+    }
+  }
+
+  <%_}_%>
+  <%_ if(!validation){ _%>
+    const handleChange = (e: any) => {
+      <%_ if(nodesElementInfo.type === "number"){ _%>
+        <%= "set"+compDetailsLabel+"Data"%>((prev: any) => ({ ...prev, <%=name.toLowerCase() %>: +e.target.value }))
+      <%_}_%>
+      <%_ if(nodesElementInfo.type === "text"){ _%>
+        <%= "set"+compDetailsLabel+"Data"%>((prev: any) => ({ ...prev, <%=name.toLowerCase() %>: e.target.value }))
+      <%_}_%>
+    }
+  <%_}_%>
+
+  <%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+  <%_ if(nodesElementInfo.props[i].name === "value"){ _%>
+  const [state, setState] = useState('<%= nodesElementInfo.props[i].value _%>')
+  <%_ }_%>
+  <%_ if(nodesElementInfo.props[i].name === "isVisible" && nodesElementInfo.type ==="password"){ _%>
+  const [isVisible, setIsVisible] = useState<Boolean>(false)
+  const toggleVisibility = () => setIsVisible(!isVisible)
+  <%_ } _%>
+  <%_ } _%>
+  <%_ let columnStart = nodes.grid.column.start  _%>  
+  <%_ let columnEnd = nodes.grid.column.end  _%>
+  <%_ let rowStart = nodes.grid.row.start  _%>
+  <%_ let rowEnd = nodes.grid.row.end  _%>
+  <%_ let gap = nodes.grid.style.gap  _%>
+  const keyset:any=i18n.keyset("language")
+  return (   
+    <div className="col-start-<%= columnStart %> col-end-<%= columnEnd %> row-start-<%= rowStart %> row-end-<%= rowEnd %> gap-<%= gap %>" >
+      <%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+        <%_ if(nodesElementInfo.props[i].name === "needTooltip" && nodesElementInfo.props[i].enum.selectedValue.length && nodesElementInfo.props[i].enum.selectedValue[0] === "true"){ _%>
+      <ActionTooltip <%_ for(let j=0;j<nodesElementInfo.props[i].tooltipProps.length;j++) { _%><%_ if(nodesElementInfo.props[i].tooltipProps[j].name === "title" && nodesElementInfo.props[i].tooltipProps[j].value !== ""){ _%><%= ' '  %>title="<%= nodesElementInfo.props[i].tooltipProps[j].value %>"<%_ } _%> <%_ if(nodesElementInfo.props[i].tooltipProps[j].name === "placement" && nodesElementInfo.props[i].tooltipProps[j].enum.selectedValue.length){ _%><%_ %><%= ' '  %>placement="<%= nodesElementInfo.props[i].tooltipProps[j].enum.selectedValue[0] %>"<%_ } _%><%_ } _%>>
+          <%_ } _%>
+      <%_ } _%>
+      <TextInput
+        label={keyset("<%= nodesElementInfo.label %>")}
+        onChange= {handleChange}
+        type="<%= nodesElementInfo.type %>"
+        value={<%=compDetailsLabel+"Data"%>?.<%=name.toLowerCase()%>?<%=compDetailsLabel+"Data"%>?.<%=name.toLowerCase()%>:""}
+      <%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+      <%_ if(nodesElementInfo.props[i].name==="leftContent" && nodesElementInfo.props[i].value !== ""){ _%>
+        leftContent={<%= nodesElementInfo.props[i].value %>}      <%_ } _%>
+      <%_ if(nodesElementInfo.props[i].name==="rightContent" && nodesElementInfo.props[i].value !== ""){ _%>
+        leftContent={<%= nodesElementInfo.props[i].value %>}      <%_ } _%>
+      <%_ if(nodesElementInfo.props[i].name==="pin" && nodesElementInfo.props[i].enum.selectedValue.length){ _%>
+        pin='<%= nodesElementInfo.props[i].enum.selectedValue[0] %>'      <%_ } _%>
+      <%_ if(nodesElementInfo.props[i].name === "placeholder" && nodesElementInfo.props[i].value !=="" ){ _%>
+        placeholder='<%= nodesElementInfo.props[i].value %>'      <%_ } _%>
+      <%_ if(nodesElementInfo.props[i].name === "disabled"&& nodesElementInfo.props[i].enum.selectedValue.length){ _%>
+        disabled={<%= nodesElementInfo.props[i].enum.selectedValue[0] %>} 
+      <%_ } _%> 
+      <%_ if(nodesElementInfo.props[i].name === "readOnly"&& nodesElementInfo.props[i].enum.selectedValue.length){ _%>
+        readOnly={<%= nodesElementInfo.props[i].enum.selectedValue[0] %>} 
+      <%_ } _%> 
+      <%_ if(nodesElementInfo.props[i].name === "size" && nodesElementInfo.props[i].enum.selectedValue.length){ _%>
+        size='<%= nodesElementInfo.props[i].enum.selectedValue[0] %>'      <%_ } _%>
+      <%_ } _%>
+      <%_ if(validation){ _%>
+        errorPlacement="inside" 
+        errorMessage={error.errorMessage} 
+        validationState={error.validationState}
+      <%_ } _%>
+      />
+      <%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+       <%_ if(nodesElementInfo.props[i].name === "needTooltip" && nodesElementInfo.props[i].enum.selectedValue.length && nodesElementInfo.props[i].enum.selectedValue[0] === "true"){ _%>
+      </ActionTooltip>
+      <%_ } _%>
+      <%_ } _%>
+    </div>
+        
+  )
+}
+export default TextInput<%=name %>

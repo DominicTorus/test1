@@ -1,0 +1,40 @@
+'use client'
+<%_ let nodesElementInfo = data.elementInfo _%>
+<%_ let nodes = data _%>
+<%_ let ufKey = data1[0].ufKey _%>
+<%_ let pfKey = data1[0].pfKey _%>
+<%_ let sfKey = data1[0].sfKey _%>
+<%_ let eventDetailsArray = data1[1] _%>
+<%_ let eventDetailsObj = data1[2] _%>
+<%_ let compDetailsLabel = data2 _%>
+import React from 'react' 
+import { List } from '@gravity-ui/uikit';
+
+const List<%=nodesElementInfo.label %> = ({data,setUser,checkToAdd,setCheckToAdd}:any) => {
+<%_ let columnStart = nodes.grid.column.start  _%>  
+<%_ let columnEnd = nodes.grid.column.end  _%>
+<%_ let rowStart = nodes.grid.row.start  _%>
+<%_ let rowEnd = nodes.grid.row.end  _%>
+<%_ let gap = nodes.grid.style.gap  _%>
+  return (
+    <div className="col-start-<%= columnStart %> col-end-<%= columnEnd %> row-start-<%= rowStart %> row-end-<%= rowEnd %> gap-<%= gap %>" >
+      <List 
+      <%_ for(let i=0;i<nodesElementInfo.props.length;i++) { _%>
+      <%_ if(nodesElementInfo.props[i].name === "sortable" && nodesElementInfo.props[i].value === "true"){ _%>
+      sortable={<%= nodesElementInfo.props[i].value %>}
+      <%_ } _%>
+      <%_ if(nodesElementInfo.props[i].name === "itemsHeight" && nodesElementInfo.props[i].value !== ""){ _%>
+      itemsHeight={<%= nodesElementInfo.props[i].value %>}
+      <%_ } _%>
+      <%_ if(nodesElementInfo.props[i].name === "items" && nodesElementInfo.props[i].value !== ""){ _%>
+      items={[<%_ let ListItems = nodesElementInfo.props[i].value.split(','); _%><%_ for (let j = 0; j < ListItems.length; j++) { _%>'<%= ListItems[j] %>'<%= ListItems.length-1===j?'':',' %> <%_ }_%>]}
+      <%_ } _%>
+      <%_ } _%>
+      />
+    </div>
+  )
+}
+export default List<%=nodesElementInfo.label %>
+
+
+
