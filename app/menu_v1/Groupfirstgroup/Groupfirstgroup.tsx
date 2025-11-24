@@ -42,10 +42,12 @@ import Tabstabs  from "./Tabstabs";
 import { useInfoMsg } from "@/app/components/infoMsgHandler";
 import { getCookie } from "@/app/components/cookieMgment";
 import { TotalContext, TotalContextProps } from '@/app/globalContext';
+import { useTheme } from '@/hooks/useTheme';
 
 
 const Groupfirstgroup = ({lockedData={},setLockedData,primaryTableData={}, setPrimaryTableData,checkToAdd,setCheckToAdd,refetch,setRefetch,dropdownData,setDropdownData,encryptionFlagPageData, nodeData, setNodeData,paginationDetails,isFormOpen=false}:any)=> {
   const token:string = getCookie('token'); 
+  const { isDark, isHighContrast, bgStyle, textStyle } = useTheme();
   const {refresh, setRefresh} = useContext(TotalContext) as TotalContextProps;
   const {memoryVariables, setMemoryVariables} = useContext(TotalContext) as TotalContextProps;
   const {globalState , setGlobalState} = useContext(TotalContext) as TotalContextProps;
@@ -313,7 +315,7 @@ const Groupfirstgroup = ({lockedData={},setLockedData,primaryTableData={}, setPr
         backgroundClip: '',
         backgroundBlendMode: ''
       }}
-      className=" rounded-md "
+      className={`rounded-md ${isDark ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}  
     >
         {allowedControls.includes("textinput") ?<TextInputtextinput   /* 2cc5d */ checkToAdd={checkToAdd} setCheckToAdd={setCheckToAdd} refetch={refetch} setRefetch={setRefetch} encryptionFlagCompData={encryptionFlagCompData} />: <div></div>}
         {allowedControls.includes("upload") ?<Documentuploaderupload   /* e78d7 */checkToAdd={checkToAdd} setCheckToAdd={setCheckToAdd} encryptionFlagCompData={encryptionFlagCompData} />: <div></div>}
