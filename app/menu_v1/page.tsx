@@ -9,13 +9,13 @@ import { useInfoMsg } from "@/app/components/infoMsgHandler";
 import { deleteAllCookies,getCookie } from '@/app/components/cookieMgment';
 import { TotalContext, TotalContextProps } from "../globalContext";
 import decodeToken from "../components/decodeToken";
-import { Icon, Button,Text } from '@gravity-ui/uikit';
-import { ChevronLeft } from '@gravity-ui/icons';
 import { useRouter } from 'next/navigation';
 import Groupfirstgroup  from "./Groupfirstgroup/Groupfirstgroup";
+import { useTheme } from '@/hooks/useTheme';
 
 
 export default function PageMenuV1() {
+  const { isDark, isHighContrast, bgStyle, textStyle } = useTheme();
   const [initialLoad, setInitialLoad] = useState(false);
   const securityData:any={
   "Employee": {
@@ -223,22 +223,33 @@ export default function PageMenuV1() {
   }, [])
   return (
     <>
-     <div style={{}}>
-        {checkfirstgroup && initialLoad &&<Groupfirstgroup  
-          lockedData={lockedData} 
-          setLockedData={setLockedData} 
+     <div
+       className={`min-h-screen w-full ${isDark ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}
+       style={{
+         backgroundColor: bgStyle,
+         color: textStyle,
+         minHeight: '100vh',
+         ...(isHighContrast && {
+           fontWeight: '500',
+           borderWidth: '2px'
+         })
+       }}
+     >
+        {checkfirstgroup && initialLoad &&<Groupfirstgroup
+          lockedData={lockedData}
+          setLockedData={setLockedData}
           primaryTableData={primaryTableData}
           setPrimaryTableData={setPrimaryTableData}
-          checkToAdd={checkToAdd} 
-          setCheckToAdd={setCheckToAdd}  
+          checkToAdd={checkToAdd}
+          setCheckToAdd={setCheckToAdd}
           refetch={refetch}
           setRefetch={setRefetch}
-          dropdownData={dropdownData} 
+          dropdownData={dropdownData}
           setDropdownData={setDropdownData}
           encryptionFlagPageData={encryptionFlagPageData}
           paginationDetails={paginationDetails}        />}
-        
-          </div> 
+
+          </div>
     </>
   )
 }
