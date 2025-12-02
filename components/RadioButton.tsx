@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useGlobal } from "@/context/GlobalContext";
 import { Tooltip } from "./Tooltip";
 import { ComponentSize, HeaderPosition, TooltipProps as TooltipPropsType } from "@/types/global";
-import { getFontSizeClass, getBorderRadiusClass } from "@/utils/branding";
+import { getFontSizeClass, getBorderRadiusClass } from "@/app/utils/branding";
 
 interface RadioButtonItem {
   value: string;
@@ -20,6 +20,8 @@ interface RadioButtonProps {
   headerText?: string;
   headerPosition?: HeaderPosition;
   onChange?: (value: string) => void;
+  onBlur?: (e: React.FocusEvent<HTMLElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLElement>) => void;
   defaultValue?: string;
   className?: string;
 }
@@ -33,6 +35,8 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
   headerText,
   headerPosition = "top",
   onChange,
+  onBlur,
+  onFocus,
   defaultValue,
   className = "",
 }) => {
@@ -76,6 +80,8 @@ export const RadioButton: React.FC<RadioButtonProps> = ({
           <button
             key={item.value}
             onClick={() => handleChange(item.value)}
+            onBlur={onBlur}
+            onFocus={onFocus}
             disabled={disabled}
             className={`
               ${getSizeClasses()}

@@ -6,7 +6,7 @@ import { useEventBus } from "@/context/EventBusContext";
 import { Tooltip } from "./Tooltip";
 import { Icon } from "./Icon";
 import { ComponentSize, TextInputType, TextInputView, TextAreaPin, HeaderPosition, TooltipProps as TooltipPropsType, ComponentEvents } from "@/types/global";
-import { getFontSizeClass, getBorderRadiusClass } from "@/utils/branding";
+import { getFontSizeClass, getBorderRadiusClass } from "@/app/utils/branding";
 import { GravityIcon } from "@/types/icons";
 
 interface TextInputProps {
@@ -15,15 +15,19 @@ interface TextInputProps {
   label?: string;
   pin?: TextAreaPin;
   placeholder?: string;
-  size: ComponentSize;
+  size?: ComponentSize;
   type?: TextInputType;
   leftContent?: string;
   rightContent?: string;
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
   topContent?: boolean;
   readOnly?: boolean;
   view?: TextInputView;
+  name?: string;
   value?: string;
   note?: string;
+  validationState?: 'valid' | 'invalid';
   errorMessage?: string;
   hasClear?: boolean;
   autoFocus?: boolean;
@@ -32,8 +36,8 @@ interface TextInputProps {
   headerText?: string;
   headerPosition?: HeaderPosition;
   require?: boolean;
-  onChange?: (value: string) => void;
-  onBlur?: (value: string) => void;
+  onChange?: React.ChangeEventHandler<HTMLInputElement> | undefined
+  onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined
   events?: ComponentEvents[];
   className?: string;
 }
@@ -48,11 +52,15 @@ export const TextInput: React.FC<TextInputProps> = ({
   type = "text",
   leftContent,
   rightContent,
+  startContent,
+  endContent,
   topContent = false,
   readOnly = false,
   view = "normal",
+  name="",
   value = "",
   note,
+  validationState,
   errorMessage,
   hasClear = false,
   autoFocus = false,
@@ -62,7 +70,7 @@ export const TextInput: React.FC<TextInputProps> = ({
   headerPosition = "top",
   require = false,
   onChange,
-  onBlur,
+  onBlur=() => {},
   events,
   className = "",
 }) => {
@@ -74,7 +82,7 @@ export const TextInput: React.FC<TextInputProps> = ({
 
   const handleChange = (newValue: string) => {
     setInternalValue(newValue);
-    onChange?.(newValue);
+    // onChange?.(newValue);
 
     // Emit rise events when onChange occurs
     const onChangeEvent = events?.find(e => e.name === "onChange");
@@ -118,7 +126,7 @@ export const TextInput: React.FC<TextInputProps> = ({
                 break;
               case "clearHandler":
                 setInternalValue("");
-                onChange?.("");
+                // onChange?.("");
                 break;
               case "refreshElement":
                 // Refresh could reload value from memory or reset to initial
@@ -140,7 +148,7 @@ export const TextInput: React.FC<TextInputProps> = ({
     return () => {
       unsubscribers.forEach(unsub => unsub());
     };
-  }, [nodeId, events, eventBus, onChange]);
+  }, [nodeId, events, eventBus]);
 
   const getSizeClasses = () => {
     const fontSize = getFontSizeClass(branding.fontSize);
@@ -184,8 +192,10 @@ export const TextInput: React.FC<TextInputProps> = ({
     const isDark = theme === "dark" || theme === "dark-hc";
     const styles: React.CSSProperties = {};
 
-    if (errorMessage) {
+    if (validationState === 'invalid' || errorMessage) {
       styles.borderColor = "#EF4444";
+    } else if (validationState === 'valid') {
+      styles.borderColor = "#10B981";
     } else if (view === "normal") {
       styles.borderColor = isDark ? "#4B5563" : "#D1D5DB";
     } else if (view === "clear") {
@@ -200,26 +210,30 @@ export const TextInput: React.FC<TextInputProps> = ({
   const inputElement = (
     <div className="w-full">
       {label && topContent && (
-        <label className={`block mb-2 ${getFontSizeClass(branding.fontSize)} font-medium ${
-          isDark ? "text-gray-200" : "text-gray-900"
-        }`}>
+        <label
+          className={`block mb-2 ${getFontSizeClass(branding.fontSize)} font-medium ${
+            isDark ? "text-gray-200" : "text-gray-900"
+          }`}
+          style={{ fontFamily: 'var(--font-body)' }}
+        >
           {label}
         </label>
       )}
       
       <div className="relative flex items-center">
-        {leftContent && (
+        {(startContent || leftContent) && (
           <div className={`absolute ${direction === "RTL" ? "right-3" : "left-3"} ${
             isDark ? "text-gray-400" : "text-gray-500"
-          }`}>
-            {leftContent}
+          } flex items-center`}>
+            {startContent || leftContent}
           </div>
         )}
         
         <input
           type={type}
-          value={internalValue}
-          onChange={(e) => handleChange(e.target.value)}
+          name={name}
+          value={value}
+          onChange={onChange}
           placeholder={placeholder}
           disabled={isDisabled}
           readOnly={readOnly}
@@ -230,8 +244,8 @@ export const TextInput: React.FC<TextInputProps> = ({
             ${getSizeClasses()}
             ${getPinClasses()}
             ${view === "normal" ? "border-2" : view === "clear" ? "border-2 border-transparent" : "border-0 border-b-2"}
-            ${leftContent ? (direction === "RTL" ? "pr-10" : "pl-10") : ""}
-            ${rightContent || hasClear ? (direction === "RTL" ? "pl-10" : "pr-10") : ""}
+            ${(startContent || leftContent) ? (direction === "RTL" ? "pr-10" : "pl-10") : ""}
+            ${(endContent || rightContent || hasClear) ? (direction === "RTL" ? "pl-10" : "pr-10") : ""}
             ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
             ${isDark ? "bg-gray-800 text-white" : "bg-white text-gray-900"}
             transition-all
@@ -239,14 +253,15 @@ export const TextInput: React.FC<TextInputProps> = ({
             ${className}
           `}
           style={{
+            fontFamily: 'var(--font-body)',
             ...getInputStyles(),
             ...(!errorMessage && view === "normal" ? {
-              outlineColor: branding.brandColor,
-              boxShadow: `0 0 0 2px ${branding.brandColor}20`
+             // outlineColor: branding.brandColor,
+             // boxShadow: `0 0 0 2px ${branding.brandColor}20`
             } : {})
           }}
           onFocus={(e) => {
-            if (!errorMessage) {
+            if (!errorMessage && !validationState) {
               e.currentTarget.style.borderColor = branding.brandColor;
               if (view === "clear") {
                 e.currentTarget.style.boxShadow = "none";
@@ -254,7 +269,7 @@ export const TextInput: React.FC<TextInputProps> = ({
             }
           }}
           onBlur={(e) => {
-            if (!errorMessage) {
+            if (!errorMessage && !validationState) {
               if (view === "clear") {
                 e.currentTarget.style.borderColor = "transparent";
                 e.currentTarget.style.boxShadow = "none";
@@ -262,11 +277,11 @@ export const TextInput: React.FC<TextInputProps> = ({
                 e.currentTarget.style.borderColor = isDark ? "#4B5563" : "#D1D5DB";
               }
             }
-            onBlur?.(internalValue);
+            onBlur(e)
           }}
         />
-        
-        {(rightContent || (hasClear && internalValue)) && (
+       
+        {(endContent || rightContent || (hasClear && internalValue)) && (
           <div className={`absolute ${direction === "RTL" ? "left-3" : "right-3"} flex items-center gap-2`}>
             {hasClear && internalValue && (
               <button
@@ -276,7 +291,12 @@ export const TextInput: React.FC<TextInputProps> = ({
                 <Icon data="close" size={16} />
               </button>
             )}
-            {rightContent && (
+            {endContent && (
+              <div className={`flex items-center ${isDark ? "text-gray-400" : "text-gray-500"}`}>
+                {endContent}
+              </div>
+            )}
+            {!endContent && rightContent && (
               <span className={isDark ? "text-gray-400" : "text-gray-500"}>
                 {rightContent}
               </span>
@@ -285,8 +305,8 @@ export const TextInput: React.FC<TextInputProps> = ({
         )}
       </div>
       
-      {(note || errorMessage) && (
-        <div className={`mt-1 text-sm ${errorMessage ? "text-red-500" : isDark ? "text-gray-400" : "text-gray-600"}`}>
+      {(note || errorMessage || validationState === 'invalid') && (
+        <div className={`mt-1 text-sm ${(validationState === 'invalid' || errorMessage) ? "text-red-500" : isDark ? "text-gray-400" : "text-gray-600"}`}>
           {errorMessage || note}
         </div>
       )}

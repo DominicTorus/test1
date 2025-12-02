@@ -16,7 +16,7 @@ import {
 import {
   getFontSizeClass,
   getBorderRadiusClass,
-} from "@/utils/branding";
+} from "@/app/utils/branding";
 
 type IconDisplay = "Icon only" | "Start with Icon" | "End with Icon";
 
@@ -34,10 +34,11 @@ interface ButtonProps {
   headerText?: string;
   headerPosition?: HeaderPosition;
   children?: React.ReactNode;
-  onClick?: () => void;
+  onClick?: (e?:any) => void;
   onFocus?: () => void;
   events?: ComponentEvents[];
   className?: string;
+  startContent?: React.ReactNode;
   endContent?: React.ReactNode;
 }
 
@@ -59,6 +60,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
   onFocus,
   events = [],
   className = "",
+  startContent,
   endContent,
 }, ref) => {
   const { theme, direction, branding } = useGlobal();
@@ -119,12 +121,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
     }
   }, [nodeId]);
 
-  const handleClick = useCallback(() => {
+  const handleClick = useCallback((e?:any) => {
     if (disabled) return;
 
     // Call provided onClick handler
     if (onClick) {
-      onClick();
+      onClick(e);
     }
 
     // Emit events based on configuration
@@ -381,10 +383,17 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
     const textElement = children && <span>{children}</span>;
 
     if (iconDisplay === "Icon only") {
-      return iconElement;
+      return (
+        <>
+          {startContent}
+          {iconElement}
+          {endContent}
+        </>
+      );
     } else if (iconDisplay === "Start with Icon") {
       return (
         <>
+          {startContent}
           {iconElement}
           {textElement && (
             <span className={direction === "RTL" ? "mr-2" : "ml-2"}>{textElement}</span>
@@ -396,6 +405,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
       // "End with Icon"
       return (
         <>
+          {startContent}
           {textElement}
           {iconElement && (
             <span className={direction === "RTL" ? "mr-2" : "ml-2"}>{iconElement}</span>

@@ -4,7 +4,7 @@ import React from "react";
 import { useGlobal } from "@/context/GlobalContext";
 import { Tooltip } from "./Tooltip";
 import { HeaderPosition, TooltipProps as TooltipPropsType } from "@/types/global";
-import { getFontSizeClass, getBorderRadiusClass } from "@/utils/branding";
+import { getFontSizeClass, getBorderRadiusClass } from "@/app/utils/branding";
 
 interface ImageProps {
   url: string;

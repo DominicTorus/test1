@@ -8,7 +8,7 @@ import {
   HeaderPosition,
   TooltipProps as TooltipPropsType,
 } from "@/types/global";
-import { getFontSizeClass, getBorderRadiusClass, applyBrandColor } from "@/utils/branding";
+import { getFontSizeClass, getBorderRadiusClass, applyBrandColor } from "@/app/utils/branding";
 
 interface CheckboxProps {
   checked?: boolean;

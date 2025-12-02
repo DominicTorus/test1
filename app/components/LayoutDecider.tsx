@@ -8,10 +8,12 @@ import { TotalContext, TotalContextProps } from '../globalContext'
 import { AxiosService } from './axiosService'
 import { deleteAllCookies, getCookie } from './cookieMgment'
 import { useInfoMsg } from './infoMsgHandler'
-import { MenuItem, ScreenDetail } from '../interfaces/interfaces'
+import { MenuItem } from '../interfaces/interfaces'
 import decodeToken from './decodeToken'
 import { useGravityThemeClass } from '../utils/useGravityUITheme'
 import axios from 'axios'
+import { useGlobal } from '@/context/GlobalContext'
+import { useTheme } from '@/hooks/useTheme'
 const LayoutDecider = ({
   mode = 'detached',
   navigationStyles = 'vertical',
@@ -32,23 +34,19 @@ const LayoutDecider = ({
   const [fullView, setFullView] = useState(
     sidebarStyle == 'default' || sidebarStyle == 'condensed' ? true : false
   )
-  const { property, setProperty, userDetails , setUserDetails,encAppFalg , setEncAppFalg } = useContext(
-    TotalContext
-  ) as TotalContextProps
+  const {userDetails, setUserDetails } = useContext(TotalContext) as TotalContextProps
+  const { branding,  } = useGlobal();
+  const {borderColor} = useTheme()
+  const { brandColor, hoverColor, selectionColor } = branding;
   const encryptionFlagApp: boolean = false;    
-  const encryptionDpd: string = "CK:CT003:FNGK:AF:FNK:CDF-DPD:CATK:CG:AFGK:TG2:AFK:updatemongoDPD:AFVK:v1";
+  const encryptionDpd: string = "CK:CT293:FNGK:AF:FNK:CDF-DPD:CATK:AG001:AFGK:A001:AFK:postgresDPD:AFVK:v1";
   const encryptionMethod: string = "";
-  const brandColor = property?.brandColor || '#1F2D3D'
-  const hoverColor = property?.hoverColor || '#1F2D3D'
-  const selectionColor = property?.selectionColor || '#1F2D3D'
-  const sidebarColor = property?.menubarColor || '#1F2D3D'
- // const topbarColor = property?.topbarColor || ''
-  const logo = "https://cdns3dfsdev.toruslowcode.com/torus/9.1/CT003/resources/images/image.jfif"
-  const appName = "TG2"
+  const logo = ""
+  const appName = "application"
   const toast = useInfoMsg()
   const [loading, setLoading] = useState(true)
   const [updatedNavData, setUpdatedNavData] = useState<MenuItem[]>([])
-  const aKey :string = "CK:TGA:FNGK:BLDC:FNK:DEV:CATK:CT003:AFGK:CG:AFK:TG2:AFVK:v2:bldc"
+  const aKey :string = "CK:TGA:FNGK:BLDC:FNK:DEV:CATK:CT293:AFGK:AG001:AFK:A001:AFVK:v1:bldc"
   const [rawNavData, setRawNavData] = useState<MenuItem[] | null>(null);
   /*const navData: MenuItem[] = [
   {
@@ -76,13 +74,27 @@ const LayoutDecider = ({
     "icon": "https://cdns3dfsdev.toruslowcode.com/torus/9.1/resources/icons/admin-svgrepo-com.svg"
   },
   {
-    "menuGroupLabel": "Menu",
+    "menuGroupLabel": "screen",
     "screenDetails": [
       {
-        "name": "menu",
-        "key": "CK:CT003:FNGK:AF:FNK:UF-UFW:CATK:CG:AFGK:TG2:AFK:AllComponents:AFVK:v1",
+        "name": "screen",
+        "key": "CK:CT293:FNGK:AF:FNK:UF-UFW:CATK:AG001:AFGK:A001:AFK:parentchildindivitualsave:AFVK:v1",
         "allowedAccessProfile": [
-          "Employee"
+          "Template 1"
+        ],
+        "static": false
+      }
+    ],
+    "items": []
+  },
+  {
+    "menuGroupLabel": "Report",
+    "screenDetails": [
+      {
+        "name": "report",
+        "key": "CK:CT293:FNGK:AF:FNK:UF-UFR:CATK:AG001:AFGK:A001:AFK:report:AFVK:v1",
+        "allowedAccessProfile": [
+          "Template 1"
         ],
         "static": false
       }
@@ -360,7 +372,7 @@ const LayoutDecider = ({
   }
 
    if (loading == true){
-    return (<div className='flex w-[100vw] h-[100vh] bg-slate-200 justify-center items-center '><img src="https://cdns3dfsdev.toruslowcode.com/torus/9.1/CT003/resources/splashImage/bea83775357853.5c4a1808c8a7b.gif" alt="loadingImage" /></div>);
+    return (<div className='flex w-[100vw] h-[100vh] bg-slate-200 justify-center items-center '><span>Loading...</span></div>);
   }
   return (
     <div className={`flex h-screen w-screen flex-col`}>
@@ -372,7 +384,6 @@ const LayoutDecider = ({
           selectionColor={selectionColor}
           brandColor={brandColor}
           hoverColor={hoverColor}
-       //   topbarColor={topbarColor}
           appName={appName}
           logo={logo}
           userDetails={userDetails}
@@ -382,8 +393,7 @@ const LayoutDecider = ({
         <div
           className={`cursor-pointer transition-all duration-700 ease-in-out ${getSideNavClassName}`}
           style={{
-            //backgroundColor: `${sidebarColor}`,
-            borderColor: 'var(--g-color-line-generic)'
+            borderColor: borderColor
           }}
         >
           <SideNav
@@ -401,7 +411,7 @@ const LayoutDecider = ({
         <div
           className={`flex-1 overflow-auto ${childrenClassName} pageStyle border`}
           style={{
-            borderColor: 'var(--g-color-line-generic)'
+            borderColor: borderColor
           }}
         >
           {children}

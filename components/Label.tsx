@@ -6,7 +6,7 @@ import { Tooltip } from "./Tooltip";
 import { Icon } from "./Icon";
 import { GravityIcon } from "@/types/icons";
 import { HeaderPosition, TooltipProps as TooltipPropsType } from "@/types/global";
-import { getFontSizeClass, getBorderRadiusClass } from "@/utils/branding";
+import { getFontSizeClass, getBorderRadiusClass } from "@/app/utils/branding";
 
 type LabelSize = "xs" | "s" | "m";
 type LabelTheme = "normal" | "info" | "danger" | "warning" | "success" | "utility" | "unknown" | "clear";

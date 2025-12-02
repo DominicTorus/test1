@@ -6,7 +6,7 @@ import { useGlobal } from "@/context/GlobalContext";
 import { useEventBus } from "@/context/EventBusContext";
 import { Tooltip } from "./Tooltip";
 import { HeaderPosition, TooltipProps as TooltipPropsType, ComponentEvents } from "@/types/global";
-import { getFontSizeClass, getBorderRadiusClass } from "@/utils/branding";
+import { getFontSizeClass, getBorderRadiusClass } from "@/app/utils/branding";
 
 export interface SignatureRef {
   clear: () => void;

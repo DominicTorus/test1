@@ -4,7 +4,7 @@ import React from "react";
 import { useGlobal } from "@/context/GlobalContext";
 import { Tooltip } from "./Tooltip";
 import { SwitchSize, HeaderPosition, TooltipProps as TooltipPropsType } from "@/types/global";
-import { getFontSizeClass } from "@/utils/branding";
+import { getFontSizeClass } from "@/app/utils/branding";
 
 interface SwitchProps {
   checked: boolean;

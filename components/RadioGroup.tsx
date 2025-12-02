@@ -5,7 +5,7 @@ import { useGlobal } from "@/context/GlobalContext";
 import { Tooltip } from "./Tooltip";
 import { Radio } from "./Radio";
 import { CheckboxSize, HeaderPosition, TooltipProps as TooltipPropsType } from "@/types/global";
-import { getFontSizeClass } from "@/utils/branding";
+import { getFontSizeClass } from "@/app/utils/branding";
 
 interface RadioGroupItem {
   value: string;

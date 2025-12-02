@@ -6,7 +6,7 @@ import { Tooltip } from "./Tooltip";
 import { Icon } from "./Icon";
 import { GravityIcon } from "@/types/icons";
 import { HeaderPosition, TooltipProps as TooltipPropsType } from "@/types/global";
-import { getFontSizeClass, getBorderRadiusClass } from "@/utils/branding";
+import { getFontSizeClass, getBorderRadiusClass } from "@/app/utils/branding";
 
 type TabSize = "m" | "l" | "xl";
 type TabDirection = "horizontal" | "vertical";
@@ -20,15 +20,15 @@ interface TabItem {
 
 interface TabsProps {
   items: TabItem[];
-  direction: TabDirection;
-  size: TabSize;
+  direction?: TabDirection;
+  size?: TabSize;
   disabled?: boolean;
   needTooltip?: boolean;
   tooltipProps?: TooltipPropsType;
   headerText?: string;
   headerPosition?: HeaderPosition;
   defaultActiveId?: string;
-  onChange?: (id: string) => void;
+  onChange?: (id: any) => void;
   className?: string;
 }
 
@@ -42,17 +42,16 @@ export const Tabs: React.FC<TabsProps> = ({
   headerText,
   headerPosition = "top",
   defaultActiveId,
-  onChange,
+  onChange=()=>{},
   className = "",
 }) => {
   const { theme, branding } = useGlobal();
   const [activeTab, setActiveTab] = useState(defaultActiveId || items[0]?.id || "");
 
   const handleTabClick = (id: string) => {
-    if (!disabled) {
+      onChange(id);
       setActiveTab(id);
-      onChange?.(id);
-    }
+    
   };
 
   const getSizeClasses = () => {
@@ -90,7 +89,7 @@ export const Tabs: React.FC<TabsProps> = ({
           return (
             <button
               key={item.id}
-              onClick={() => handleTabClick(item.id)}
+              onClick={()=> handleTabClick(item.id)}
               disabled={disabled}
               className={`
                 ${getSizeClasses()}
