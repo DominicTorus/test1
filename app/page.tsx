@@ -29,6 +29,12 @@ import { Image } from "@/components/Image";
 import { List } from "@/components/List";
 import { Menu } from "@/components/Menu";
 import { Popup, usePopup } from "@/components/Popup";
+import DocumentUploader from "@/components/DocumentUploader";
+import DocumentViewer from "@/components/DocumentViewer";
+import TreeViewer from "@/components/TreeViewer";
+import { TorusSpeechToTextInput } from "@/components/SpeechToText";
+import { TextToSpeech } from "@/components/TextToSpeech";
+import { Signature } from "@/components/Signature";
 
 export default function ComponentShowcase() {
   // State management
@@ -48,6 +54,27 @@ export default function ComponentShowcase() {
   const [pinValue, setPinValue] = useState("");
   const [tableSelection, setTableSelection] = useState<string[]>([]);
   const [selectedSection, setSelectedSection] = useState("button");
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [treeData, setTreeData] = useState({
+    name: "John Doe",
+    age: 30,
+    isActive: true,
+    address: {
+      street: "123 Main St",
+      city: "New York",
+      country: "USA"
+    },
+    hobbies: ["Reading", "Gaming", "Coding"],
+    projects: [
+      { name: "Project A", status: "completed" },
+      { name: "Project B", status: "in-progress" }
+    ]
+  });
+  const [speechText, setSpeechText] = useState("");
+  const [ttsText, setTtsText] = useState("Hello! This is a text-to-speech demonstration. Click the speaker icon to hear this text.");
+  const [signature1, setSignature1] = useState("");
+  const [signature2, setSignature2] = useState("");
+  const signatureRef = React.useRef<any>(null);
 
   // Popup state
   const { isOpen, anchorRef, openPopup, closePopup } = usePopup();
@@ -67,16 +94,22 @@ export default function ComponentShowcase() {
     { id: "pininput", name: "PinInput", category: "Inputs" },
     { id: "slider", name: "Slider", category: "Inputs" },
     { id: "radio", name: "Radio", category: "Inputs" },
+    { id: "documentuploader", name: "DocumentUploader", category: "Inputs" },
+    { id: "speechtotext", name: "SpeechToText", category: "Inputs" },
+    { id: "texttospeech", name: "TextToSpeech", category: "Inputs" },
+    { id: "signature", name: "Signature", category: "Inputs" },
     { id: "modal", name: "Modal", category: "Overlay" },
     { id: "popup", name: "Popup", category: "Overlay" },
     { id: "icon", name: "Icon", category: "Display" },
     { id: "text", name: "Text", category: "Typography" },
     { id: "image", name: "Image", category: "Display" },
     { id: "label", name: "Label", category: "Display" },
+    { id: "documentviewer", name: "DocumentViewer", category: "Display" },
     { id: "progress", name: "Progress", category: "Feedback" },
     { id: "spin", name: "Spin", category: "Feedback" },
     { id: "table", name: "Table", category: "Data" },
     { id: "list", name: "List", category: "Data" },
+    { id: "treeviewer", name: "TreeViewer", category: "Data" },
     { id: "tabs", name: "Tabs", category: "Navigation" },
     { id: "menu", name: "Menu", category: "Navigation" },
     { id: "pagination", name: "Pagination", category: "Navigation" },
@@ -142,32 +175,58 @@ export default function ComponentShowcase() {
 
                 <div className="space-y-8">
                   <div>
-                    <Text variant="subheader-2" color="secondary" className="mb-4">Views</Text>
+                    <Text variant="subheader-2" color="secondary" className="mb-4">Basic Views</Text>
                     <div className="flex flex-wrap gap-3">
                       <Button view="normal">Normal</Button>
                       <Button view="action">Action</Button>
+                      <Button view="raised">Raised</Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-4">Outlined Views</Text>
+                    <div className="flex flex-wrap gap-3">
                       <Button view="outlined">Outlined</Button>
-                      <Button view="outlined-info">Info</Button>
-                      <Button view="outlined-success">Success</Button>
-                      <Button view="outlined-warning">Warning</Button>
-                      <Button view="outlined-danger">Danger</Button>
+                      <Button view="outlined-info">Outlined Info</Button>
+                      <Button view="outlined-success">Outlined Success</Button>
+                      <Button view="outlined-warning">Outlined Warning</Button>
+                      <Button view="outlined-danger">Outlined Danger</Button>
+                      <Button view="outlined-utility">Outlined Utility</Button>
+                      <Button view="outlined-action">Outlined Action</Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-4">Flat Views</Text>
+                    <div className="flex flex-wrap gap-3">
                       <Button view="flat">Flat</Button>
+                      <Button view="flat-secondary">Flat Secondary</Button>
                       <Button view="flat-info">Flat Info</Button>
                       <Button view="flat-success">Flat Success</Button>
                       <Button view="flat-warning">Flat Warning</Button>
                       <Button view="flat-danger">Flat Danger</Button>
-                      <Button view="raised">Raised</Button>
+                      <Button view="flat-utility">Flat Utility</Button>
+                      <Button view="flat-action">Flat Action</Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-4">High Contrast Views</Text>
+                    <div className="flex flex-wrap gap-3">
+                      <Button view="normal-contrast">Normal Contrast</Button>
+                      <Button view="outlined-contrast">Outlined Contrast</Button>
+                      <Button view="flat-contrast">Flat Contrast</Button>
                     </div>
                   </div>
 
                   <div>
                     <Text variant="subheader-2" color="secondary" className="mb-4">Sizes</Text>
                     <div className="flex flex-wrap items-center gap-3">
-                      <Button size="xs">XS</Button>
+                      <Button size="xs">XghgfhS</Button>
                       <Button size="s">S</Button>
                       <Button size="m">M</Button>
                       <Button size="l">L</Button>
-                      <Button size="xl">XL</Button>
+                      <Button size="xl">ghfghXL</Button>
                     </div>
                   </div>
 
@@ -184,6 +243,10 @@ export default function ComponentShowcase() {
                       <Button pin="clear-round">Clear-Round</Button>
                       <Button pin="brick-clear">Brick-Clear</Button>
                       <Button pin="clear-brick">Clear-Brick</Button>
+                      <Button pin="circle-brick">Circle-Brick</Button>
+                      <Button pin="brick-circle">Brick-Circle</Button>
+                      <Button pin="circle-clear">Circle-Clear</Button>
+                      <Button pin="clear-circle">Clear-Circle</Button>
                     </div>
                   </div>
 
@@ -296,9 +359,9 @@ export default function ComponentShowcase() {
                   <div>
                     <Text variant="subheader-2" color="secondary" className="mb-4">With Images</Text>
                     <div className="flex flex-wrap gap-4">
-                      <Avatar imageUrl="https://i.pravatar.cc/150?img=1" alt="User 1" />
-                      <Avatar imageUrl="https://i.pravatar.cc/150?img=2" alt="User 2" withImageBorder />
-                      <Avatar imageUrl="https://i.pravatar.cc/150?img=3" alt="User 3" shape="square" />
+                      <Avatar imageUrl="https://i.pravatar.cc/150?img=1" alt="User 1" size="xl" />
+                      <Avatar imageUrl="https://i.pravatar.cc/150?img=2" alt="User 2" withImageBorder size="xl" />
+                      <Avatar imageUrl="https://i.pravatar.cc/150?img=3" alt="User 3" shape="square" size="xl" />
                     </div>
                   </div>
                 </div>
@@ -595,6 +658,538 @@ export default function ComponentShowcase() {
               </Card>
             </section>
 
+            {/* DocumentUploader */}
+            <section id="documentuploader" className="scroll-mt-24">
+              <Card view="outlined" size="l" className="p-8">
+                <Text variant="display-1" color="brand" className="mb-6">DocumentUploader</Text>
+
+                <div className="space-y-8">
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-4">Modal View (Default)</Text>
+                    <DocumentUploader
+                      id="uploader-modal"
+                      viewType="modal"
+                      singleSelect={false}
+                      preview={true}
+                      draggable={true}
+                      value={uploadedFiles}
+                      onChange={setUploadedFiles}
+                      DbType="local"
+                      enableEncryption={false}
+                      fileNamingPreference="use_system_generated_name"
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-4">Inline View</Text>
+                    <div className="h-[400px] border border-gray-300 rounded-md">
+                      <DocumentUploader
+                        id="uploader-inline"
+                        viewType="inline"
+                        singleSelect={false}
+                        preview={true}
+                        draggable={true}
+                        DbType="local"
+                        enableEncryption={false}
+                        fileNamingPreference="use_original_name"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-4">Single File Selection</Text>
+                    <DocumentUploader
+                      id="uploader-single"
+                      viewType="modal"
+                      singleSelect={true}
+                      preview={true}
+                      draggable={true}
+                      DbType="local"
+                      enableEncryption={false}
+                      fileNamingPreference="use_system_generated_name"
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-4">With Encryption Enabled</Text>
+                    <DocumentUploader
+                      id="uploader-encrypted"
+                      viewType="modal"
+                      singleSelect={false}
+                      preview={true}
+                      draggable={true}
+                      DbType="secure"
+                      enableEncryption={true}
+                      fileNamingPreference="use_system_generated_name"
+                    />
+                  </div>
+                </div>
+              </Card>
+            </section>
+
+            {/* SpeechToText */}
+            <section id="speechtotext" className="scroll-mt-24">
+              <Card view="outlined" size="l" className="p-8">
+                <Text variant="display-1" color="brand" className="mb-6">SpeechToText</Text>
+
+                <div className="space-y-8 max-w-2xl">
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Basic Speech-to-Text Input</Text>
+                    <Text variant="body-2" color="secondary" className="mb-3">
+                      Click the microphone icon to start voice recognition, or type manually. Click the search icon to submit.
+                    </Text>
+                    <TorusSpeechToTextInput
+                      value={speechText}
+                      onChange={(value: string) => setSpeechText(value)}
+                      onSearch={() => {
+                        console.log("Search triggered with:", speechText);
+                      }}
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">With Custom Placeholder</Text>
+                    <TorusSpeechToTextInput
+                      value=""
+                      onChange={(value: string) => console.log("Voice input:", value)}
+                      onSearch={() => {
+                        console.log("Search triggered");
+                      }}
+                      placeholder="Ask me anything..."
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Search Query Example</Text>
+                    <div className="space-y-3">
+                      <TorusSpeechToTextInput
+                        value=""
+                        onChange={(value: string) => console.log("Search query:", value)}
+                        onSearch={() => {
+                          console.log("Performing search...");
+                        }}
+                        placeholder="Search products, services, or help..."
+                      />
+                      <Text variant="caption-1" color="secondary">
+                        💡 Tip: Click the microphone to use voice input, or type your search query manually.
+                      </Text>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Display Current Input</Text>
+                    <TorusSpeechToTextInput
+                      value={speechText}
+                      onChange={(value: string) => setSpeechText(value)}
+                      onSearch={() => {
+                        alert(`You searched for: ${speechText}`);
+                      }}
+                      placeholder="Try speaking or typing..."
+                    />
+                    {speechText && (
+                      <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                        <Text variant="body-2" color="primary">
+                          <strong>Current Input:</strong> {speechText}
+                        </Text>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Features</Text>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Real-time speech recognition using Web Speech API</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Toggle between voice input and manual typing</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Visual feedback with microphone on/off states</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Search button to trigger actions</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Supports continuous listening mode</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-orange-500 mt-1">⚠</span>
+                        <Text variant="body-2" color="secondary">
+                          Note: Speech recognition requires browser support (Chrome, Edge, Safari)
+                        </Text>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </section>
+
+            {/* TextToSpeech */}
+            <section id="texttospeech" className="scroll-mt-24">
+              <Card view="outlined" size="l" className="p-8">
+                <Text variant="display-1" color="brand" className="mb-6">TextToSpeech</Text>
+
+                <div className="space-y-8 max-w-2xl">
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Basic Text-to-Speech</Text>
+                    <Text variant="body-2" color="secondary" className="mb-3">
+                      Type or paste text in the textarea below, then click the speaker icon to hear it spoken aloud.
+                    </Text>
+                    <TextToSpeech
+                      value={ttsText}
+                      onUpdate={(value: string) => setTtsText(value)}
+                      placeholder="Enter text to convert to speech..."
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Read-Only Mode</Text>
+                    <TextToSpeech
+                      value="This is a read-only text that can be spoken but not edited."
+                      readOnly
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Custom Content Example</Text>
+                    <TextToSpeech
+                      value="Welcome to our component showcase! This TextToSpeech component uses the Web Speech API to convert text into natural-sounding speech. You can edit this text and click the speaker icon to hear any changes."
+                      onUpdate={(value: string) => console.log("Text updated:", value)}
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Larger Text Area</Text>
+                    <TextToSpeech
+                      value="The quick brown fox jumps over the lazy dog. This is a demonstration of a longer text that can be converted to speech. The component supports multiple lines and paragraphs. You can edit this text and hear it spoken by clicking the speaker icon on the right side of the text area."
+                      onUpdate={(value: string) => console.log("Updated:", value)}
+                      minRows={6}
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Different Sizes</Text>
+                    <div className="space-y-3">
+                      <TextToSpeech
+                        value="Small text area"
+                        size="s"
+                        minRows={2}
+                      />
+                      <TextToSpeech
+                        value="Medium text area (default)"
+                        size="m"
+                        minRows={3}
+                      />
+                      <TextToSpeech
+                        value="Large text area"
+                        size="l"
+                        minRows={4}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Features</Text>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Text-to-speech conversion using Web Speech Synthesis API</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Editable textarea with real-time updates</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Speaker icon button for triggering speech</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Visual feedback when speaking (button disabled + status message)</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Support for multi-line text with adjustable rows</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">onUpdate callback for handling text changes</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-orange-500 mt-1">⚠</span>
+                        <Text variant="body-2" color="secondary">
+                          Note: Speech synthesis is supported in modern browsers (Chrome, Edge, Safari, Firefox)
+                        </Text>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </section>
+
+            {/* Signature */}
+            <section id="signature" className="scroll-mt-24">
+              <Card view="outlined" size="l" className="p-8">
+                <Text variant="display-1" color="brand" className="mb-6">Signature</Text>
+
+                <div className="space-y-8 max-w-4xl">
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Basic Signature Pad</Text>
+                    <Text variant="body-2" color="secondary" className="mb-3">
+                      Draw your signature using mouse or touch. Click the Clear button to reset.
+                    </Text>
+                    <Signature
+                      value={signature1}
+                      onChange={(sig) => setSignature1(sig)}
+                      height={200}
+                      width={600}
+                    />
+                    <div className="mt-2 flex gap-2">
+                      <Button
+                        size="s"
+                        view="outlined"
+                        onClick={() => setSignature1("")}
+                      >
+                        Clear Signature
+                      </Button>
+                      <Button
+                        size="s"
+                        view="action"
+                        onClick={() => {
+                          if (signature1) {
+                            console.log("Signature saved:", signature1);
+                            alert("Signature saved to console!");
+                          } else {
+                            alert("Please draw a signature first");
+                          }
+                        }}
+                      >
+                        Save Signature
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">With Title and Custom Dimensions</Text>
+                    <Signature
+                      title="Customer Signature"
+                      value={signature2}
+                      onChange={(sig) => setSignature2(sig)}
+                      height={150}
+                      width={500}
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">With Header Text (Different Positions)</Text>
+                    <div className="space-y-6">
+                      <Signature
+                        headerText="Sign Here (Top)"
+                        headerPosition="top"
+                        height={150}
+                        width={500}
+                      />
+                      <Signature
+                        headerText="Sign Here (Bottom)"
+                        headerPosition="bottom"
+                        height={150}
+                        width={500}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Required Field</Text>
+                    <Signature
+                      headerText="Signature"
+                      headerPosition="top"
+                      require={true}
+                      height={150}
+                      width={500}
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Custom Colors</Text>
+                    <div className="space-y-4">
+                      <div>
+                        <Text variant="body-2" color="secondary" className="mb-2">Blue pen on light background</Text>
+                        <Signature
+                          height={150}
+                          width={500}
+                          penColor="#0066FF"
+                          backgroundColor="#F0F8FF"
+                        />
+                      </div>
+                      <div>
+                        <Text variant="body-2" color="secondary" className="mb-2">White pen on dark background</Text>
+                        <Signature
+                          height={150}
+                          width={500}
+                          penColor="#FFFFFF"
+                          backgroundColor="#1F2937"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Read-Only Signature</Text>
+                    <Text variant="body-2" color="secondary" className="mb-3">
+                      This signature pad is read-only and cannot be modified.
+                    </Text>
+                    <Signature
+                      readOnly={true}
+                      height={150}
+                      width={500}
+                      value={signature1}
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Disabled State</Text>
+                    <Signature
+                      disabled={true}
+                      height={150}
+                      width={500}
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">With Ref Methods</Text>
+                    <Text variant="body-2" color="secondary" className="mb-3">
+                      Use ref to programmatically control the signature pad.
+                    </Text>
+                    <Signature
+                      ref={signatureRef}
+                      height={150}
+                      width={500}
+                    />
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button
+                        size="s"
+                        view="outlined"
+                        onClick={() => signatureRef.current?.clear()}
+                      >
+                        Clear via Ref
+                      </Button>
+                      <Button
+                        size="s"
+                        view="outlined-info"
+                        onClick={() => {
+                          const isEmpty = signatureRef.current?.isEmpty();
+                          alert(isEmpty ? "Signature is empty" : "Signature is not empty");
+                        }}
+                      >
+                        Check if Empty
+                      </Button>
+                      <Button
+                        size="s"
+                        view="outlined-success"
+                        onClick={() => {
+                          const dataURL = signatureRef.current?.toDataURL();
+                          if (dataURL) {
+                            console.log("Signature Data URL:", dataURL);
+                            alert("Signature exported to console as Data URL");
+                          }
+                        }}
+                      >
+                        Export as Data URL
+                      </Button>
+                      <Button
+                        size="s"
+                        view="outlined-warning"
+                        onClick={() => {
+                          if (signature1) {
+                            signatureRef.current?.fromDataURL(signature1);
+                            alert("Loaded signature from first example");
+                          } else {
+                            alert("Draw a signature in the first example first");
+                          }
+                        }}
+                      >
+                        Load from Data URL
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">With Tooltip</Text>
+                    <Signature
+                      needTooltip
+                      tooltipProps={{ title: "Please sign in the box below", placement: "top-start" }}
+                      height={150}
+                      width={500}
+                    />
+                  </div>
+
+                  <div>
+                    <Text variant="subheader-2" color="secondary" className="mb-3">Features</Text>
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Draw signatures with mouse or touch input</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Export signature as base64 Data URL</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Load existing signatures from Data URL</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Customizable pen color and background color</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Adjustable canvas dimensions (width & height)</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Header text with multiple positions (top, bottom, left, right)</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Required field indicator support</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Read-only and disabled states</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Ref methods: clear(), toDataURL(), fromDataURL(), isEmpty()</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">onChange callback for real-time signature updates</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">onEnd callback triggered when drawing ends</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Theme-aware (automatic dark/light mode support)</Text>
+                      </div>
+                      <div className="flex items-start gap-2">
+                        <span className="text-green-500 mt-1">✓</span>
+                        <Text variant="body-2">Tooltip integration</Text>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </section>
+
             {/* Modal & Popup */}
             <section id="modal" className="scroll-mt-24">
               <Card view="outlined" size="l" className="p-8">
@@ -692,6 +1287,80 @@ export default function ComponentShowcase() {
                       </div>
                     </div>
                   </div>
+
+                  <div id="documentviewer">
+                    <Text variant="header-2" color="primary" className="mb-4">DocumentViewer</Text>
+                    <div className="space-y-6">
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">PDF Viewer</Text>
+                        <div className="h-[500px] border border-gray-300 rounded-md overflow-hidden">
+                          <DocumentViewer
+                            url="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                            viewer="url"
+                            queryParams=""
+                            viewerUrl=""
+                            googleCheckInterval={500}
+                            googleMaxChecks={5}
+                            googleCheckContentLoaded={true}
+                            overrideLocalhost="null"
+                            style={{ width: '100%', height: '100%' }}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Google Docs Viewer</Text>
+                        <div className="h-[500px] border border-gray-300 rounded-md overflow-hidden">
+                          <DocumentViewer
+                            url="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                            viewer="google"
+                            queryParams="HL=EN"
+                            viewerUrl=""
+                            googleCheckInterval={500}
+                            googleMaxChecks={5}
+                            googleCheckContentLoaded={true}
+                            overrideLocalhost="null"
+                            style={{ width: '100%', height: '100%' }}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Office Viewer</Text>
+                        <div className="h-[500px] border border-gray-300 rounded-md overflow-hidden">
+                          <DocumentViewer
+                            url="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                            viewer="office"
+                            queryParams=""
+                            viewerUrl=""
+                            googleCheckInterval={500}
+                            googleMaxChecks={5}
+                            googleCheckContentLoaded={true}
+                            overrideLocalhost="null"
+                            style={{ width: '100%', height: '100%' }}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Custom Styling</Text>
+                        <div className="h-[400px] border border-gray-300 rounded-md overflow-hidden bg-gray-50">
+                          <DocumentViewer
+                            url="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                            viewer="url"
+                            queryParams=""
+                            viewerUrl=""
+                            googleCheckInterval={500}
+                            googleMaxChecks={5}
+                            googleCheckContentLoaded={true}
+                            overrideLocalhost="null"
+                            className="custom-doc-viewer"
+                            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Card>
             </section>
@@ -699,49 +1368,229 @@ export default function ComponentShowcase() {
             {/* Typography */}
             <section id="text" className="scroll-mt-24">
               <Card view="outlined" size="l" className="p-8">
-                <Text variant="display-1" color="brand" className="mb-6">Typography</Text>
+                <Text variant="display-1" color="brand" className="mb-6">Text Component</Text>
 
-                <div className="space-y-8">
+                <div className="space-y-12">
                   <div>
-                    <Text variant="subheader-2" color="secondary" className="mb-4">Display Variants</Text>
-                    <div className="space-y-2">
-                      <Text variant="display-4">Display 4 - Largest</Text>
-                      <Text variant="display-3">Display 3</Text>
-                      <Text variant="display-2">Display 2</Text>
-                      <Text variant="display-1">Display 1</Text>
+                    <Text variant="header-2" color="primary" className="mb-4">Display Variants</Text>
+                    <div className="space-y-3">
+                      <Text variant="display-4">Display 4 - Largest heading</Text>
+                      <Text variant="display-3">Display 3 - Large heading</Text>
+                      <Text variant="display-2">Display 2 - Medium heading</Text>
+                      <Text variant="display-1">Display 1 - Small heading</Text>
                     </div>
                   </div>
 
                   <div>
-                    <Text variant="subheader-2" color="secondary" className="mb-4">Headers & Subheaders</Text>
-                    <div className="space-y-2">
-                      <Text variant="header-2">Header 2</Text>
-                      <Text variant="header-1">Header 1</Text>
-                      <Text variant="subheader-3">Subheader 3</Text>
-                      <Text variant="subheader-2">Subheader 2</Text>
-                      <Text variant="subheader-1">Subheader 1</Text>
+                    <Text variant="header-2" color="primary" className="mb-4">Headers & Subheaders</Text>
+                    <div className="space-y-3">
+                      <Text variant="header-2">Header 2 - Main section header</Text>
+                      <Text variant="header-1">Header 1 - Subsection header</Text>
+                      <Text variant="subheader-3">Subheader 3 - Large subheader</Text>
+                      <Text variant="subheader-2">Subheader 2 - Medium subheader</Text>
+                      <Text variant="subheader-1">Subheader 1 - Small subheader</Text>
                     </div>
                   </div>
 
                   <div>
-                    <Text variant="subheader-2" color="secondary" className="mb-4">Body Text</Text>
-                    <div className="space-y-2">
-                      <Text variant="body-3">Body 3 - Larger body text</Text>
-                      <Text variant="body-2">Body 2 - Normal body text</Text>
+                    <Text variant="header-2" color="primary" className="mb-4">Body Text Variants</Text>
+                    <div className="space-y-3">
+                      <Text variant="body-3">Body 3 - Larger body text for emphasis</Text>
+                      <Text variant="body-2">Body 2 - Normal body text (default size)</Text>
                       <Text variant="body-1">Body 1 - Smaller body text</Text>
+                      <Text variant="body-short">Body Short - Compact text variant</Text>
                     </div>
                   </div>
 
                   <div>
-                    <Text variant="subheader-2" color="secondary" className="mb-4">Colors</Text>
-                    <div className="space-y-2">
-                      <Text color="primary">Primary Color</Text>
-                      <Text color="secondary">Secondary Color</Text>
-                      <Text color="brand">Brand Color</Text>
-                      <Text color="info">Info Color</Text>
-                      <Text color="positive">Positive Color</Text>
-                      <Text color="warning">Warning Color</Text>
-                      <Text color="danger">Danger Color</Text>
+                    <Text variant="header-2" color="primary" className="mb-4">Caption & Code Variants</Text>
+                    <div className="space-y-4">
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-2">Captions</Text>
+                        <div className="space-y-2">
+                          <Text variant="caption-2">Caption 2 - Small caption text</Text>
+                          <Text variant="caption-1">Caption 1 - Extra small caption with reduced opacity</Text>
+                        </div>
+                      </div>
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-2">Code Text</Text>
+                        <div className="space-y-2">
+                          <Text variant="code-3">Code 3 - Large monospace: const x = 42;</Text>
+                          <Text variant="code-2">Code 2 - Medium monospace: function example() {}</Text>
+                          <Text variant="code-1">Code 1 - Small monospace: let result = true;</Text>
+                          <Text variant="code-inline-2">Inline code example: npm install</Text>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="header-2" color="primary" className="mb-4">Color Palette</Text>
+                    <div className="space-y-6">
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Primary Colors</Text>
+                        <div className="space-y-2">
+                          <Text color="primary">Primary - Main text color</Text>
+                          <Text color="complementary">Complementary - Secondary emphasis</Text>
+                          <Text color="secondary">Secondary - Less prominent text</Text>
+                          <Text color="hint">Hint - Subtle text for hints</Text>
+                        </div>
+                      </div>
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Semantic Colors</Text>
+                        <div className="space-y-2">
+                          <Text color="info">Info - Informational text</Text>
+                          <Text color="info-heavy">Info Heavy - Strong informational emphasis</Text>
+                          <Text color="positive">Positive - Success or confirmation</Text>
+                          <Text color="positive-heavy">Positive Heavy - Strong success emphasis</Text>
+                          <Text color="warning">Warning - Caution or warning text</Text>
+                          <Text color="warning-heavy">Warning Heavy - Strong warning emphasis</Text>
+                          <Text color="danger">Danger - Error or critical text</Text>
+                          <Text color="danger-heavy">Danger Heavy - Strong error emphasis</Text>
+                        </div>
+                      </div>
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Additional Colors</Text>
+                        <div className="space-y-2">
+                          <Text color="brand">Brand - Brand color text</Text>
+                          <Text color="utility">Utility - Utility purple</Text>
+                          <Text color="utility-heavy">Utility Heavy - Strong utility purple</Text>
+                          <Text color="misc">Misc - Miscellaneous gray</Text>
+                          <Text color="link">Link - Hyperlink blue</Text>
+                          <Text color="link-visited">Link Visited - Visited link purple</Text>
+                        </div>
+                      </div>
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Theme-Specific Colors</Text>
+                        <div className="space-y-2">
+                          <Text color="dark-primary">Dark Primary - Light text for dark themes</Text>
+                          <Text color="light-primary">Light Primary - Dark text for light themes</Text>
+                          <Text color="inverted-primary">Inverted Primary - Theme-inverted text</Text>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="header-2" color="primary" className="mb-4">Text with Icons</Text>
+                    <div className="space-y-4">
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Icon Positions</Text>
+                        <div className="space-y-3">
+                          <Text icon="FaStar" iconDisplay="Icon only" iconSize={24} />
+                          <Text icon="FaCheck" iconDisplay="start with icon" color="positive">Success with icon at start</Text>
+                          <Text icon="FaArrowRight" iconDisplay="end with icon" color="info">Continue with icon at end</Text>
+                        </div>
+                      </div>
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Icon Sizes</Text>
+                        <div className="space-y-3">
+                          <Text icon="FaHeart" iconDisplay="start with icon" iconSize={16}>Small icon (16px)</Text>
+                          <Text icon="FaHeart" iconDisplay="start with icon" iconSize={24}>Medium icon (24px)</Text>
+                          <Text icon="FaHeart" iconDisplay="start with icon" iconSize={32}>Large icon (32px)</Text>
+                        </div>
+                      </div>
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Icon with Colors</Text>
+                        <div className="space-y-3">
+                          <Text icon="FaExclamation" iconDisplay="start with icon" color="warning">Warning message</Text>
+                          <Text icon="FaTimes" iconDisplay="start with icon" color="danger">Error message</Text>
+                          <Text icon="FaInfoCircle" iconDisplay="start with icon" color="info">Information message</Text>
+                          <Text icon="FaCheckCircle" iconDisplay="start with icon" color="positive">Success message</Text>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="header-2" color="primary" className="mb-4">Text Behavior</Text>
+                    <div className="space-y-6">
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Word Break Options</Text>
+                        <div className="space-y-3 max-w-md">
+                          <div className="p-3 border border-gray-300 rounded">
+                            <Text variant="caption-1" color="secondary" className="mb-1">Normal (no break)</Text>
+                            <Text>ThisIsAVeryLongWordThatWillNotBreakByDefault</Text>
+                          </div>
+                          <div className="p-3 border border-gray-300 rounded">
+                            <Text variant="caption-1" color="secondary" className="mb-1">Break All</Text>
+                            <Text wordBreak="break-all">ThisIsAVeryLongWordThatWillBreakAtAnyCharacter</Text>
+                          </div>
+                          <div className="p-3 border border-gray-300 rounded">
+                            <Text variant="caption-1" color="secondary" className="mb-1">Break Word</Text>
+                            <Text wordBreak="break-word">ThisIsAVeryLongWordThatWillBreakAtWordBoundaries</Text>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Whitespace Options</Text>
+                        <div className="space-y-3 max-w-md">
+                          <div className="p-3 border border-gray-300 rounded">
+                            <Text variant="caption-1" color="secondary" className="mb-1">Normal</Text>
+                            <Text>This text will wrap normally when it reaches the container edge</Text>
+                          </div>
+                          <div className="p-3 border border-gray-300 rounded overflow-x-auto">
+                            <Text variant="caption-1" color="secondary" className="mb-1">No Wrap</Text>
+                            <Text whitespace="nowrap">This text will not wrap and will extend beyond the container if needed</Text>
+                          </div>
+                          <div className="p-3 border border-gray-300 rounded">
+                            <Text variant="caption-1" color="secondary" className="mb-1">Break Spaces</Text>
+                            <Text whitespace="break-spaces">This    text    preserves    multiple    spaces</Text>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="header-2" color="primary" className="mb-4">Text with Tooltips</Text>
+                    <div className="space-y-3">
+                      <Text
+                        needTooltip
+                        tooltipProps={{ title: "This is a helpful tooltip", placement: "top-start" }}
+                        color="info"
+                      >
+                        Hover over this text to see a tooltip
+                      </Text>
+                      <Text
+                        needTooltip
+                        tooltipProps={{ title: "Additional information here", placement: "right-start" }}
+                        icon="FaInfoCircle"
+                        iconDisplay="start with icon"
+                        color="secondary"
+                      >
+                        Text with icon and tooltip
+                      </Text>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Text variant="header-2" color="primary" className="mb-4">Combined Examples</Text>
+                    <div className="space-y-4">
+                      <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                        <Text variant="header-1" color="info" icon="FaInfoCircle" iconDisplay="start with icon" className="mb-2">
+                          Information Panel
+                        </Text>
+                        <Text variant="body-2" color="secondary">
+                          This is a complete example combining variant, color, and icon features.
+                        </Text>
+                      </div>
+                      <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                        <Text variant="header-1" color="positive" icon="FaCheckCircle" iconDisplay="start with icon" className="mb-2">
+                          Success Message
+                        </Text>
+                        <Text variant="body-2" color="secondary">
+                          Your action was completed successfully.
+                        </Text>
+                      </div>
+                      <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                        <Text variant="header-1" color="danger" icon="FaExclamation" iconDisplay="start with icon" className="mb-2">
+                          Error Alert
+                        </Text>
+                        <Text variant="body-2" color="secondary">
+                          An error occurred while processing your request.
+                        </Text>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -857,6 +1706,143 @@ export default function ComponentShowcase() {
                       <div>
                         <Text variant="subheader-2" color="secondary" className="mb-3">With Height Limit</Text>
                         <List sortable={false} items={Array.from({ length: 10 }, (_, i) => `Item ${i + 1}`)} itemsHeight={200} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="treeviewer">
+                    <Text variant="header-2" color="primary" className="mb-4">TreeViewer</Text>
+                    <div className="space-y-6">
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Interactive Tree View (Editable)</Text>
+                        <div className="h-[600px] border border-gray-300 rounded-md overflow-hidden">
+                          <TreeViewer
+                            mainData={treeData}
+                            data={treeData}
+                            handleClick={(val: any, path: string) => {
+                              console.log("Clicked:", val, "Path:", path);
+                            }}
+                            isEditable={true}
+                            path=""
+                            setData={setTreeData}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Read-Only Tree View</Text>
+                        <div className="h-[600px] border border-gray-300 rounded-md overflow-hidden">
+                          <TreeViewer
+                            mainData={treeData}
+                            data={treeData}
+                            handleClick={(val: any, path: string) => {
+                              console.log("Clicked:", val, "Path:", path);
+                            }}
+                            isEditable={false}
+                            path=""
+                            setData={() => {}}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Nested Array Example</Text>
+                        <div className="h-[500px] border border-gray-300 rounded-md overflow-hidden">
+                          <TreeViewer
+                            mainData={[
+                              { id: 1, name: "Item 1", tags: ["tag1", "tag2"] },
+                              { id: 2, name: "Item 2", tags: ["tag3", "tag4"] },
+                              { id: 3, name: "Item 3", nested: { value: "deep", count: 42 } }
+                            ]}
+                            data={[
+                              { id: 1, name: "Item 1", tags: ["tag1", "tag2"] },
+                              { id: 2, name: "Item 2", tags: ["tag3", "tag4"] },
+                              { id: 3, name: "Item 3", nested: { value: "deep", count: 42 } }
+                            ]}
+                            handleClick={(val: any, path: string) => {
+                              console.log("Clicked:", val, "Path:", path);
+                            }}
+                            isEditable={false}
+                            path=""
+                            setData={() => {}}
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <Text variant="subheader-2" color="secondary" className="mb-3">Complex Nested Structure</Text>
+                        <div className="h-[600px] border border-gray-300 rounded-md overflow-hidden">
+                          <TreeViewer
+                            mainData={{
+                              company: "Tech Corp",
+                              employees: [
+                                {
+                                  name: "Alice",
+                                  role: "Developer",
+                                  skills: ["React", "TypeScript", "Node.js"],
+                                  contact: {
+                                    email: "alice@example.com",
+                                    phone: "123-456-7890"
+                                  }
+                                },
+                                {
+                                  name: "Bob",
+                                  role: "Designer",
+                                  skills: ["Figma", "Sketch", "Adobe XD"],
+                                  contact: {
+                                    email: "bob@example.com",
+                                    phone: "098-765-4321"
+                                  }
+                                }
+                              ],
+                              settings: {
+                                theme: "dark",
+                                notifications: true,
+                                privacy: {
+                                  shareData: false,
+                                  analytics: true
+                                }
+                              }
+                            }}
+                            data={{
+                              company: "Tech Corp",
+                              employees: [
+                                {
+                                  name: "Alice",
+                                  role: "Developer",
+                                  skills: ["React", "TypeScript", "Node.js"],
+                                  contact: {
+                                    email: "alice@example.com",
+                                    phone: "123-456-7890"
+                                  }
+                                },
+                                {
+                                  name: "Bob",
+                                  role: "Designer",
+                                  skills: ["Figma", "Sketch", "Adobe XD"],
+                                  contact: {
+                                    email: "bob@example.com",
+                                    phone: "098-765-4321"
+                                  }
+                                }
+                              ],
+                              settings: {
+                                theme: "dark",
+                                notifications: true,
+                                privacy: {
+                                  shareData: false,
+                                  analytics: true
+                                }
+                              }
+                            }}
+                            handleClick={(val: any, path: string) => {
+                              console.log("Clicked:", val, "Path:", path);
+                            }}
+                            isEditable={false}
+                            path=""
+                            setData={() => {}}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
