@@ -1,0 +1,11 @@
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+   schemas   = ["ct001_tgw2"]
+}
+
+generator client {
+provider = "prisma-client-js"
+}

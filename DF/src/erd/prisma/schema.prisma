@@ -1,0 +1,293 @@
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+   schemas   = ["ct001_tgw2"]
+}
+
+generator client {
+provider = "prisma-client-js"
+}
+
+model mytable {
+id  Int @default(autoincrement())
+name  String? 
+code  String? 
+type  String? 
+parentcode  String? 
+salaryflag  Boolean? 
+trs_created_date  DateTime? 
+trs_created_by  String?  @db.VarChar(length: 64)
+trs_modified_date  DateTime? 
+trs_modified_by  String?  @db.VarChar(length: 64)
+trs_process_id  String?  @db.VarChar(length: 64)
+trs_access_profile  String?  @db.VarChar(length: 32)
+trs_org_grp_code  String?  @db.VarChar(length: 16)
+trs_org_code  String?  @db.VarChar(length: 16)
+trs_role_grp_code  String?  @db.VarChar(length: 64)
+trs_role_code  String?  @db.VarChar(length: 64)
+trs_ps_grp_code  String?  @db.VarChar(length: 64)
+trs_ps_code  String?  @db.VarChar(length: 64)
+trs_sub_org_grp_code  String?  @db.VarChar(length: 16)
+trs_sub_org_code  String?  @db.VarChar(length: 16)
+trs_locked_by  String?  @db.VarChar(length: 64)
+trs_locked_time  DateTime? 
+trs_tenant_id  String?  @db.VarChar(length: 16)
+trs_app_code  String?  @db.VarChar(length: 16)
+trs_product_code  String?  @db.VarChar(length: 16)
+trs_event_process_status  String?  @db.VarChar(length: 64)
+trs_event_status  String?  @db.VarChar(length: 64)
+trs_token_id  String?  @db.VarChar(length: 32)
+trs_version  String?  @db.VarChar(length: 16)
+
+@@id([id])
+@@schema("ct001_tgw2")
+}
+
+
+model hierarchy_table {
+hierarchy_id  Int @default(autoincrement())
+parent_company  String? 
+company  String? 
+parent_company_process_flag  Boolean? 
+company_process_flag  Boolean? 
+branch_process_flag  Boolean? 
+branch  String? 
+type  String? 
+trs_created_date  DateTime? 
+trs_created_by  String?  @db.VarChar(length: 64)
+trs_modified_date  DateTime? 
+trs_modified_by  String?  @db.VarChar(length: 64)
+trs_process_id  String?  @db.VarChar(length: 64)
+trs_access_profile  String?  @db.VarChar(length: 32)
+trs_org_grp_code  String?  @db.VarChar(length: 16)
+trs_org_code  String?  @db.VarChar(length: 16)
+trs_role_grp_code  String?  @db.VarChar(length: 64)
+trs_role_code  String?  @db.VarChar(length: 64)
+trs_ps_grp_code  String?  @db.VarChar(length: 64)
+trs_ps_code  String?  @db.VarChar(length: 64)
+trs_sub_org_grp_code  String?  @db.VarChar(length: 16)
+trs_sub_org_code  String?  @db.VarChar(length: 16)
+trs_locked_by  String?  @db.VarChar(length: 64)
+trs_locked_time  DateTime? 
+trs_tenant_id  String?  @db.VarChar(length: 16)
+trs_app_code  String?  @db.VarChar(length: 16)
+trs_product_code  String?  @db.VarChar(length: 16)
+trs_event_process_status  String?  @db.VarChar(length: 64)
+trs_event_status  String?  @db.VarChar(length: 64)
+trs_token_id  String?  @db.VarChar(length: 32)
+trs_version  String?  @db.VarChar(length: 16)
+
+@@id([hierarchy_id])
+@@schema("ct001_tgw2")
+}
+
+
+model test {
+table_id  Int @default(autoincrement())
+name  String? 
+code  String 
+trs_created_date  DateTime 
+trs_created_by  String?  @db.VarChar(length: 64)
+trs_modified_date  DateTime? 
+trs_modified_by  String?  @db.VarChar(length: 64)
+trs_process_id  String?  @db.VarChar(length: 64)
+trs_access_profile  String?  @db.VarChar(length: 32)
+trs_org_grp_code  String?  @db.VarChar(length: 16)
+trs_org_code  String?  @db.VarChar(length: 16)
+trs_role_grp_code  String?  @db.VarChar(length: 64)
+trs_role_code  String?  @db.VarChar(length: 64)
+trs_ps_grp_code  String?  @db.VarChar(length: 64)
+trs_ps_code  String?  @db.VarChar(length: 64)
+trs_sub_org_grp_code  String?  @db.VarChar(length: 16)
+trs_sub_org_code  String?  @db.VarChar(length: 16)
+trs_locked_by  String?  @db.VarChar(length: 64)
+trs_locked_time  DateTime? 
+trs_tenant_id  String  @db.VarChar(length: 16)
+trs_app_code  String  @db.VarChar(length: 16)
+trs_product_code  String  @db.VarChar(length: 16)
+trs_event_process_status  String?  @db.VarChar(length: 64)
+trs_event_status  String?  @db.VarChar(length: 64)
+trs_token_id  String?  @db.VarChar(length: 64)
+trs_version  String?  @db.VarChar(length: 16)
+testchild   testchild[]    
+
+@@id([table_id])
+@@unique(fields: [code], map: "code")
+@@schema("ct001_tgw2")
+}
+
+
+model testchild {
+child_id  BigInt 
+child_name  String? 
+child_code  String? 
+trs_created_date  DateTime? 
+trs_created_by  String?  @db.VarChar(length: 64)
+trs_modified_date  DateTime? 
+trs_modified_by  String?  @db.VarChar(length: 64)
+trs_process_id  String?  @db.VarChar(length: 64)
+trs_access_profile  String?  @db.VarChar(length: 32)
+trs_org_grp_code  String?  @db.VarChar(length: 16)
+trs_org_code  String?  @db.VarChar(length: 16)
+trs_role_grp_code  String?  @db.VarChar(length: 64)
+trs_role_code  String?  @db.VarChar(length: 64)
+trs_ps_grp_code  String?  @db.VarChar(length: 64)
+trs_ps_code  String?  @db.VarChar(length: 64)
+trs_sub_org_grp_code  String?  @db.VarChar(length: 16)
+trs_sub_org_code  String?  @db.VarChar(length: 16)
+trs_locked_by  String?  @db.VarChar(length: 64)
+trs_locked_time  DateTime? 
+trs_tenant_id  String?  @db.VarChar(length: 16)
+trs_app_code  String?  @db.VarChar(length: 16)
+trs_product_code  String?  @db.VarChar(length: 16)
+trs_event_process_status  String?  @db.VarChar(length: 64)
+trs_event_status  String?  @db.VarChar(length: 64)
+trs_token_id  String?  @db.VarChar(length: 64)
+trs_version  String?  @db.VarChar(length: 16)
+table_id   Int? 
+test   test?  @relation(fields: [table_id], references: [table_id])  
+
+@@id([child_id])
+@@schema("ct001_tgw2")
+}
+
+
+model testchild1 {
+testchild1_id  Int 
+testchild1_name  String? 
+testchild1_code  String? 
+trs_created_date  DateTime? 
+trs_created_by  String?  @db.VarChar(length: 64)
+trs_modified_date  DateTime? 
+trs_modified_by  String?  @db.VarChar(length: 64)
+trs_process_id  String?  @db.VarChar(length: 64)
+trs_access_profile  String?  @db.VarChar(length: 32)
+trs_org_grp_code  String?  @db.VarChar(length: 16)
+trs_org_code  String?  @db.VarChar(length: 16)
+trs_role_grp_code  String?  @db.VarChar(length: 64)
+trs_role_code  String?  @db.VarChar(length: 64)
+trs_ps_grp_code  String?  @db.VarChar(length: 64)
+trs_ps_code  String?  @db.VarChar(length: 64)
+trs_sub_org_grp_code  String?  @db.VarChar(length: 16)
+trs_sub_org_code  String?  @db.VarChar(length: 16)
+trs_locked_by  String?  @db.VarChar(length: 64)
+trs_locked_time  DateTime? 
+trs_tenant_id  String?  @db.VarChar(length: 16)
+trs_app_code  String?  @db.VarChar(length: 16)
+trs_product_code  String?  @db.VarChar(length: 16)
+trs_event_process_status  String?  @db.VarChar(length: 64)
+trs_event_status  String?  @db.VarChar(length: 64)
+trs_token_id  String?  @db.VarChar(length: 64)
+trs_version  String?  @db.VarChar(length: 16)
+test1_id   Int?  @unique
+test1   test1? @relation(fields: [test1_id], references: [test1_id])  
+
+@@id([testchild1_id])
+@@schema("ct001_tgw2")
+}
+
+
+model test1 {
+test1_id  Int 
+test1_name  String? 
+test1_code  String? 
+trs_created_date  DateTime? 
+trs_created_by  String?  @db.VarChar(length: 64)
+trs_modified_date  DateTime? 
+trs_modified_by  String?  @db.VarChar(length: 64)
+trs_process_id  String?  @db.VarChar(length: 64)
+trs_access_profile  String?  @db.VarChar(length: 32)
+trs_org_grp_code  String?  @db.VarChar(length: 16)
+trs_org_code  String?  @db.VarChar(length: 16)
+trs_role_grp_code  String?  @db.VarChar(length: 64)
+trs_role_code  String?  @db.VarChar(length: 64)
+trs_ps_grp_code  String?  @db.VarChar(length: 64)
+trs_ps_code  String?  @db.VarChar(length: 64)
+trs_sub_org_grp_code  String?  @db.VarChar(length: 16)
+trs_sub_org_code  String?  @db.VarChar(length: 16)
+trs_locked_by  String?  @db.VarChar(length: 64)
+trs_locked_time  DateTime? 
+trs_tenant_id  String?  @db.VarChar(length: 16)
+trs_app_code  String?  @db.VarChar(length: 16)
+trs_product_code  String?  @db.VarChar(length: 16)
+trs_event_process_status  String?  @db.VarChar(length: 64)
+trs_event_status  String?  @db.VarChar(length: 64)
+trs_token_id  String?  @db.VarChar(length: 64)
+trs_version  String?  @db.VarChar(length: 16)
+testchild1   testchild1?    
+
+@@id([test1_id])
+@@schema("ct001_tgw2")
+}
+
+
+model test2 {
+test2_id  BigInt 
+test2_name  String? 
+test2_code  String? 
+trs_created_date  DateTime? 
+trs_created_by  String?  @db.VarChar(length: 64)
+trs_modified_date  DateTime? 
+trs_modified_by  String?  @db.VarChar(length: 64)
+trs_process_id  String?  @db.VarChar(length: 64)
+trs_access_profile  String?  @db.VarChar(length: 32)
+trs_org_grp_code  String?  @db.VarChar(length: 16)
+trs_org_code  String?  @db.VarChar(length: 16)
+trs_role_grp_code  String?  @db.VarChar(length: 64)
+trs_role_code  String?  @db.VarChar(length: 64)
+trs_ps_grp_code  String?  @db.VarChar(length: 64)
+trs_ps_code  String?  @db.VarChar(length: 64)
+trs_sub_org_grp_code  String?  @db.VarChar(length: 16)
+trs_sub_org_code  String?  @db.VarChar(length: 16)
+trs_locked_by  String?  @db.VarChar(length: 64)
+trs_locked_time  DateTime? 
+trs_tenant_id  String?  @db.VarChar(length: 16)
+trs_app_code  String?  @db.VarChar(length: 16)
+trs_product_code  String?  @db.VarChar(length: 16)
+trs_event_process_status  String?  @db.VarChar(length: 64)
+trs_event_status  String?  @db.VarChar(length: 64)
+trs_token_id  String?  @db.VarChar(length: 64)
+trs_version  String?  @db.VarChar(length: 16)
+testchild2   testchild2[]    
+
+@@id([test2_id])
+@@schema("ct001_tgw2")
+}
+
+
+model testchild2 {
+testchild2_id  Int 
+testchild2_name  String? 
+testchild2_code  String? 
+trs_created_date  DateTime? 
+trs_created_by  String?  @db.VarChar(length: 64)
+trs_modified_date  DateTime? 
+trs_modified_by  String?  @db.VarChar(length: 64)
+trs_process_id  String?  @db.VarChar(length: 64)
+trs_access_profile  String?  @db.VarChar(length: 32)
+trs_org_grp_code  String?  @db.VarChar(length: 16)
+trs_org_code  String?  @db.VarChar(length: 16)
+trs_role_grp_code  String?  @db.VarChar(length: 64)
+trs_role_code  String?  @db.VarChar(length: 64)
+trs_ps_grp_code  String?  @db.VarChar(length: 64)
+trs_ps_code  String?  @db.VarChar(length: 64)
+trs_sub_org_grp_code  String?  @db.VarChar(length: 16)
+trs_sub_org_code  String?  @db.VarChar(length: 16)
+trs_locked_by  String?  @db.VarChar(length: 64)
+trs_locked_time  DateTime? 
+trs_tenant_id  String?  @db.VarChar(length: 16)
+trs_app_code  String?  @db.VarChar(length: 16)
+trs_product_code  String?  @db.VarChar(length: 16)
+trs_event_process_status  String?  @db.VarChar(length: 64)
+trs_event_status  String?  @db.VarChar(length: 64)
+trs_token_id  String?  @db.VarChar(length: 64)
+trs_version  String?  @db.VarChar(length: 16)
+test2   test2[]  
+
+@@id([testchild2_id])
+@@schema("ct001_tgw2")
+}
+
+
